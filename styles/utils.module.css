@@ -55,3 +55,11 @@
 .postImg {
   float: right;
 }
+
+@media screen and (max-width: 624px) {
+  .postImg {
+    float: none;
+    width: 200px;
+    margin: 0 auto;
+  }
+}
