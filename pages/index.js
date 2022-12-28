@@ -1,115 +1,87 @@
-import Head from 'next/head'
+import Head from 'next/head';
+import Layout, { siteTitle } from '../components/layout';
+import utilStyles from '../styles/utils.module.css';
+import Link from 'next/link';
 import styles from '../styles/Home.module.css';
+import Image from 'next/image';
+
+export default function Home({posts}) {
+  let imgSources = posts.map((post)=>
+    `https://robohash.org/${post.title.split(" ").join("").slice(0, 5)}`
+  )
+  return (
+    <Layout home>
+      <Head>
+        <title>{siteTitle}</title>
+      </Head>
+      <section className={utilStyles.headingMd}>
+        <p>Hi, I'm a full-stack developer and Math teacher. This is my blog.</p>
+        <p>Robot stories written in Lorem.</p>
+        <div>
+          <h4>Posts</h4>
+          {posts.map((post)=> (
+            post.id < 20 && 
+            <div key={post.id} className={styles.postLinkAndImg}>
+              <div className={styles.postImg}>
+                <Image  loader={() => imgSources[post.id-1]} src={imgSources[post.id-1]} width={50} height={50} alt='post image'/>
+              </div>
+              <div className={styles.postLink}>
+                <Link href={`/posts/${post.id}`}>
+                  <div className={styles.postTitle}>{post.title}</div>
+                </Link>
+                  <small className={utilStyles.lightText}>2022-0{9-5+post.id%6}-0{10-(post.id%9+1)}</small>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </Layout>
+  );
+}
+
+/* OLD VERSION with important coments:
+import Head from 'next/head';
+import Image from 'next/image';
+import Link from 'next/link';
+import Layout from '../components/layout';
 
 export default function Home() {
   return (
-    <div className={styles.container}>
+    <Layout home>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Home</title>
       </Head>
+      /*!!!! images - no need 'public' in the route: /public/images/profile.png*/
+      /* <Image
+        src="/images/profile.png" 
+        height={144}
+        width={144}
+        alt="Mr X."
+      />
+      <p>Hi, my name is Z P.</p>
+      <p>Welcome my blog!</p>
+      <h1>Next.js is great!</h1>
+      <h2>See {' '} 
+        <Link href="/posts/first-post"> /*!!!! no need 'pages' in the route: /pages/posts/first-post'*/
+        /* in global.css you can style it with 'a' */
+         /*  first post
+        </Link>
+      </h2>
+    </Layout>
+  );
+} */
 
-      <main>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+export async function getStaticProps() {
+  // Call the fetch method and passing the json post API link
+  const response = await fetch(
+      'https://jsonplaceholder.typicode.com/posts');
 
-        <p className={styles.description}>
-          Get started by editing <code>pages/index.js</code>
-        </p>
+  // Parse the JSON
+  const data = await response.json();
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
-        </a>
-      </footer>
-
-      <style jsx>{`
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        footer img {
-          margin-left: 0.5rem;
-        }
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-decoration: none;
-          color: inherit;
-        }
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
-        }
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
-    </div>
-  )
+  // Finally we return the result
+  // inside props as posts
+  return {
+      props: { posts: data},
+  };
 }
