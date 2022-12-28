@@ -4,12 +4,22 @@ import utilStyles from '../styles/utils.module.css'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import Image from 'next/image'
+import React, { useState } from 'react'
 
 export default function Home({ posts }) {
-  let imgSources = posts.map(
+  const imgSources = posts.map(
     (post) =>
       `https://robohash.org/${post.title.split(' ').join('').slice(0, 5)}`
   )
+
+  const [postGroup, setPostGroup] = useState(1)
+
+  const handleSelectChange = (e) => {
+    setPostGroup(e.target.value)
+  }
+
+  console.log(postGroup + ' ' + (postGroup * 10 - 9) + ' ' + postGroup * 10)
+
   return (
     <Layout home>
       <Head>
@@ -19,10 +29,25 @@ export default function Home({ posts }) {
         <p>Hi, I'm a full-stack developer and Math teacher. This is my blog.</p>
         <p>Robot stories written in Lorem.</p>
         <div>
-          <h4>Posts</h4>
+          <div className={styles.postChoice}>
+            <h4>Posts</h4>
+            <select className={styles.postSelect} onChange={handleSelectChange}>
+              <option value="1">1-10</option>
+              <option value="2">11-20</option>
+              <option value="3">21-30</option>
+              <option value="4">31-40</option>
+              <option value="5">41-50</option>
+              <option value="6">51-60</option>
+              <option value="7">61-70</option>
+              <option value="8">71-80</option>
+              <option value="9">81-90</option>
+              <option value="10">91-100</option>
+            </select>
+          </div>
           {posts.map(
-            (post) =>
-              post.id < 20 && (
+            (post, index) =>
+              index >= postGroup * 10 - 9 &&
+              index <= postGroup * 10 && (
                 <div key={post.id} className={styles.postLinkAndImg}>
                   <div className={styles.postImg}>
                     <Image

@@ -1,3 +1,20 @@
+.postChoice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.postSelect {
+  padding: 10px;
+  border: 2px solid rgb(77, 76, 76);
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.postSelect option {
+  padding: 30px 0;
+}
+
 .postLinkAndImg {
   display: flex;
 }
